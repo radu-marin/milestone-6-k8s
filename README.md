@@ -33,13 +33,14 @@ Part1:  (Deploy EKS using Terraform)
     └── services
 ```
 ### TERRAFORM
-- ### live/global/s3 
+- ### [live/global/s3](https://github.com/radu-marin/milestone-6-k8s/tree/main/live/global/s3) 
 	=> all terraform state files are contained in an s3 backend
+- ### [live/global/iam](https://github.com/radu-marin/milestone-6-k8s/tree/main/live/global/iam)
 	=> also contains iam roles and policies for EKS cluster and Worker Nodes
-- ### modules/network
+- ### [modules/network](https://github.com/radu-marin/milestone-6-k8s/tree/main/modules/network)
 	=> the network infrastructure consists of : 1 VPC, 2 public subnets, 2 private subnets, 1 internet gateway, 1 nat gateway, 1 public routing table, 1 private routing table
 	=> security groups: 1 sg for pub subnets, 1 sg for bastion, 1 sg for prv subnets.
-- ### modules/EKS
+- ### [modules/EKS](https://github.com/radu-marin/milestone-6-k8s/tree/main/modules/EKS)
 	=> the EKS cluster module (creates cluster and worker nodes)
 
 OBS: other modules are not constructed yet (WIP)
