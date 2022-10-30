@@ -45,7 +45,7 @@ Part1:  (Deploy EKS using Terraform)
 OBS: other modules are not constructed yet (WIP)
 
 ### JENKINS
-- check jenkinsfile (WIP) used for deployment
+- check [jenkinsfile](https://github.com/radu-marin/milestone-6-k8s/blob/main/Jenkinsfile (WIP) used for deployment
 ***
 
 
