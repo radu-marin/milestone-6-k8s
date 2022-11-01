@@ -1,11 +1,11 @@
 properties([
     parameters([
-        // password( name: 'AWS_ACCESS_KEY_ID', 
-        //         defaultValue: '', 
-        //         description: 'AWS Credentials: AWS access key ID'),
-        // password( name: 'AWS_SECRET_ACCESS_KEY', 
-        //         defaultValue: '', 
-        //         description: 'AWS Credentials: AWS secret access key'),
+        password( name: 'AWS_ACCESS_KEY_ID', 
+                defaultValue: '', 
+                description: 'AWS Credentials: AWS access key ID'),
+        password( name: 'AWS_SECRET_ACCESS_KEY', 
+                defaultValue: '', 
+                description: 'AWS Credentials: AWS secret access key'),
         string( name: 'GIT_URL',
                 defaultValue: 'https://github.com/radu-marin/milestone-6-k8s',
                 description: 'The github repository link'),
@@ -24,8 +24,8 @@ properties([
 //OBS: change to node("linux") if needed
 node("linux"){
     checkout scm
-    withCredentials([string(credentialsId: 'r-aki', variable: 'AWS_ACCESS_KEY_ID'), 
-                     string(credentialsId: 'r-sak', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+    // withCredentials([string(credentialsId: 'r-aki', variable: 'AWS_ACCESS_KEY_ID'), 
+    //                  string(credentialsId: 'r-sak', variable: 'AWS_SECRET_ACCESS_KEY')]) {
         docker.image('hashicorp/terraform').withRun('-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY') { c ->
             docker.image('hashicorp/terraform').inside {
                 sh '''
@@ -37,5 +37,5 @@ node("linux"){
             }
 
         }            
-    }
+    //}
 }
