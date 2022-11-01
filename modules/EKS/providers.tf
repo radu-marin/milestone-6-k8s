@@ -13,5 +13,6 @@ terraform {
     # }
   }
 
-  required_version = "~> 1.2.0"
+  #commented this after getting unsupported terraform core version error when building terraform container
+  #required_version = "~> 1.2.0"
 }
