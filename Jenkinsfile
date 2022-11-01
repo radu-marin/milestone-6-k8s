@@ -1,11 +1,11 @@
 properties([
     parameters([
-        password( name: 'AWS_ACCESS_KEY_ID', 
-                defaultValue: '', 
-                description: 'AWS Credentials: AWS access key ID'),
-        password( name: 'AWS_SECRET_ACCESS_KEY', 
-                defaultValue: '', 
-                description: 'AWS Credentials: AWS secret access key'),
+        // password( name: 'AWS_ACCESS_KEY_ID', 
+        //         defaultValue: '', 
+        //         description: 'AWS Credentials: AWS access key ID'),
+        // password( name: 'AWS_SECRET_ACCESS_KEY', 
+        //         defaultValue: '', 
+        //         description: 'AWS Credentials: AWS secret access key'),
         string( name: 'GIT_URL',
                 defaultValue: 'https://github.com/radu-marin/milestone-6-k8s',
                 description: 'The github repository link'),
