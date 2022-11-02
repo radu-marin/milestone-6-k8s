@@ -2,7 +2,8 @@ FROM hashicorp/terraform
 
 WORKDIR /
 
-COPY . .
+#removed copy, we'll try to use a bind mount
+#COPY . .
 
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
