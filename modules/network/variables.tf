@@ -1,3 +1,13 @@
+variable "aws_credentials" {
+    description = "Path to file with aws credentials"
+    default = "~/.aws/credentials"
+}
+
+variable "aws_named_profile" {
+    description = "AWS named profile for credentials"
+    default = "default"
+}
+
 variable "environment" {
     description = "Environment (DEV/PROD)"
 }

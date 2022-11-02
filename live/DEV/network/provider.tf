@@ -1,7 +1,3 @@
-provider "aws" {
-    region = "eu-central-1"
-}
-
 # Create S3 backend to store tfstate file
 # OBS: Run the next block only after creating the s3 first 
 terraform {
