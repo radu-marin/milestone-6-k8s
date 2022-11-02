@@ -24,9 +24,9 @@ properties([
 //OBS: change to node("linux") if needed
 node("linux"){
     checkout scm
-    // withCredentials([string(credentialsId: 'r-aki', variable: 'AWS_ACCESS_KEY_ID'), 
-    //                  string(credentialsId: 'r-sak', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-        docker.image('hashicorp/terraform').withRun('-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY') { c ->
+    withCredentials([string(credentialsId: 'r-aki', variable: 'AWS_ACCESS_KEY_ID'), 
+                     string(credentialsId: 'r-sak', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+        docker.image('hashicorp/terraform').withRun('-e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"') { c ->
             docker.image('hashicorp/terraform').inside {
                 sh '''
                 cd "live/${ENV}"
