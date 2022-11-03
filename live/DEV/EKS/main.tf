@@ -1,7 +1,5 @@
 module "EKS" {
     source = "../../../modules/EKS"
-    aws_credentials = "../../../aws_credentials"
-    aws_named_profile = "default"
     environment = "DEV"
     owner = "radul-terraform"
     naming = "student-r-ms-6-k8s"

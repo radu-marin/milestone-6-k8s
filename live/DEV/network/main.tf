@@ -1,8 +1,6 @@
 # Import network module and fill in necessary arguments
 module "network" {
     source = "../../../modules/network"
-    aws_credentials = "../../../aws_credentials"
-    aws_named_profile = "default"
     environment = "DEV"
     naming = "r-ms-6-k8s"
     owner = "radul-terraform"

@@ -30,10 +30,10 @@ properties([
 //OBS: change to node("linux") if needed
 node("linux"){
     checkout scm
-    withCredentials([string(credentialsId: '${AWS_AKI}', variable: 'AWS_ACCESS_KEY_ID'), 
-                     string(credentialsId: '${AWS_SAK}', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+    withCredentials([string(credentialsId: params.AWS_AKI, variable: 'AWS_ACCESS_KEY_ID'), 
+                     string(credentialsId: params.AWS_SAK, variable: 'AWS_SECRET_ACCESS_KEY')]) {
         docker.image('hashicorp/terraform').withRun('-e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"') { c ->
-            docker.image('hashicorp/terraform').inside {
+            docker.image('hashicorp/terraform').inside('--entrypoint ""') {
                 sh '''
                 cd "live/${ENV}"
                 echo "Current working directory is: $(pwd)"

@@ -1,3 +1,9 @@
+provider "aws" {
+    # shared_credentials_files = ["path/to/credential_file"]
+    # profile = "named_profile"
+    region = "eu-central-1"
+}
+
 # Create S3 backend to store tfstate file
 # OBS: Run the next block only after creating the s3 first 
 terraform {
