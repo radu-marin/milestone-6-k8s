@@ -39,10 +39,35 @@ node("linux"){
                     cd "live/${ENV}"
                     echo "Current working directory is: $(pwd)"
                     terraform init
-                    terraform plan -out=plan
                     '''
+                    if (params.ACTION == "Apply"){
+                        sh '''
+                        cd "live/${ENV}"
+                        terraform plan -out=plan
+                        '''
+                        env.PLAN = input message: 'Do you want to implement plan?', parameters: [choice(name: 'PLAN', choices: ['YES', 'NO'], description: 'Implement plan')]
+                        if (env.PLAN == 'YES') {
+                            sh '''
+                            cd "live/${ENV}"
+                            terraform apply plan
+                            '''
+                        }
+                    }
+                    if (params.ACTION == "Destroy"){
+                        sh '''
+                        cd "live/${ENV}"
+                        terraform plan -destroy -out=plan
+                        '''
+                        env.PLAN = input message: 'Do you want to implement destruction plan?', parameters: [choice(name: 'PLAN', choices: ['YES', 'NO'], description: 'Implement plan')]
+                        if (env.PLAN == 'YES') {
+                            sh '''
+                            cd "live/${ENV}"
+                            terraform apply plan
+                            '''
+                        }
+                    }
                 }
-             }            
+            }            
         }
     }
 }
