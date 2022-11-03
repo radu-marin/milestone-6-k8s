@@ -1,11 +1,17 @@
 properties([
     parameters([
-        password( name: 'AWS_ACCESS_KEY_ID', 
-                defaultValue: '', 
-                description: 'AWS Credentials: AWS access key ID'),
-        password( name: 'AWS_SECRET_ACCESS_KEY', 
-                defaultValue: '', 
-                description: 'AWS Credentials: AWS secret access key'),
+        // password( name: 'AWS_ACCESS_KEY_ID', 
+        //         defaultValue: '', 
+        //         description: 'AWS Credentials: AWS access key ID'),
+        // password( name: 'AWS_SECRET_ACCESS_KEY', 
+        //         defaultValue: '', 
+        //         description: 'AWS Credentials: AWS secret access key'),
+        string( name: 'AWS_AKI',
+                defaultValue: '',
+                description: 'The credential id of the aws access key id'),
+        string( name: 'AWS_SAK',
+                defaultValue: '',
+                description: 'The credential id of the aws secret access key'),
         string( name: 'GIT_URL',
                 defaultValue: 'https://github.com/radu-marin/milestone-6-k8s',
                 description: 'The github repository link'),
@@ -21,80 +27,22 @@ properties([
     ])
 ])
 
-
+//OBS: change to node("linux") if needed
 node("linux"){
-    
-    stage('Clean workspace'){
-        cleanWs()
-    }
-    
-    //clone terraform repo
-    stage('Git Prep'){
-        sh 'echo "Cloning git repo to following path: $(pwd)"'
-        git branch: "${GIT_BRANCH}", changelog: false, poll: false, url: "${GIT_URL}"
-        sh "ls"
-    }
-    
-//might pe helpful if terraform not in path and kept somewhere on your local jenkins machine (?)
-tool name: 'terraform', type: 'terraform'
-
-    stage('Configure terraform'){
-        //add terraform tool to path
-        env.TERRAFORM_HOME="${tool 'terraform'}"
-        env.PATH="${env.TERRAFORM_HOME}:${env.PATH}"
-        
-        //check
-        sh "which terraform"
-        
-        //authenticate to AWS
-        sh '''
-        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-        '''
-        // // if needed
-        // sh '''
-        // unset AWS_ACCESS_KEY_ID
-        // unset AWS_SECRET_ACCESS_KEY
-        // '''
-    }
-    
-    // Deploy or Destroy the selected infrastructure
-    stage("APPLY/DESTROY infra") {
-        if (params.ACTION == "Apply"){
-            sh '''
-                cd "live/${ENV}"
-                echo "Current working directory is: $(pwd)"
-                terraform init 
-                terraform plan -out=plan
-            '''
-            env.PLAN = input message: 'Do you want to implement plan?', parameters: [choice(name: 'PLAN', choices: ['YES', 'NO'], description: 'Implement plan')]
-            if (env.PLAN == 'YES') {
-                sh '''
+    stage("APPLY/DESTROY tf env"){
+        checkout scm
+        withCredentials([string(credentialsId: params.AWS_AKI, variable: 'AWS_ACCESS_KEY_ID'), 
+                         string(credentialsId: params.AWS_SAK, variable: 'AWS_SECRET_ACCESS_KEY')]) {
+            docker.image('hashicorp/terraform').withRun('-e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"') { c ->
+                docker.image('hashicorp/terraform').inside('--entrypoint ""') {
+                    sh '''
                     cd "live/${ENV}"
-                    terraform apply plan
-                '''
-            }
-        }
-        if (params.ACTION == "Destroy"){
-            sh '''
-                cd "live/${ENV}"
-                echo "Current working directory is: $(pwd)"
-                terraform init 
-                terraform plan -destroy -out=plan
-            '''
-            env.PLAN = input message: 'Do you want to implement destruction plan?', parameters: [choice(name: 'PLAN', choices: ['YES', 'NO'], description: 'Implement plan')]
-            if (env.PLAN == 'YES') {
-                sh '''
-                    cd "live/${ENV}"
-                    terraform apply plan
-                '''
-            }
+                    echo "Current working directory is: $(pwd)"
+                    terraform init
+                    terraform plan -out=plan
+                    '''
+                }
+             }            
         }
     }
-    
-    stage('Clean workspace'){
-        cleanWs()
-    }
-    
 }
-
