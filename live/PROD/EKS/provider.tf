@@ -9,7 +9,7 @@ provider "aws" {
 terraform {
   backend "s3"{
     bucket = "r-milestone-6-tf-state"
-    key = "PROD/network/terraform.tfstate"
+    key = "PROD/EKS/terraform.tfstate"
     region = "eu-central-1" #seems var.region not allowed here !
 
     dynamodb_table = "r-milestone-6-tf-state-locks"
