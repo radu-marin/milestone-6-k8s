@@ -45,11 +45,12 @@ Part1:  (Deploy EKS using Terraform)
 OBS: other modules are not constructed yet (WIP)
 
 ### JENKINS
-- there are two Jenkinsfiles:
-one for All in One deployment (AIO) of components
+there are two Jenkinsfiles:
+- one for All in One deployment (AIO) of components
 [Jenkinsfile-AIO](https://github.com/radu-marin/milestone-6-k8s/blob/main/Jenkinsfile-AIO)
-another one for Selective deployment:
+- another one for Selective deployment:
 [Jenkinsfile-Selective](https://github.com/radu-marin/milestone-6-k8s/blob/main/Jenkinsfile-Selective)
+
 OBS: Both of them ask for user input and confirmation, and both support Apply/Destroy paramters.
 ***
 
