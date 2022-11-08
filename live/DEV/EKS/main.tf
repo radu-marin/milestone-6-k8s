@@ -8,8 +8,8 @@ module "EKS" {
     network_remote_state_key = "DEV/network/terraform.tfstate"
     iam_remote_state_bucket = "r-milestone-6-tf-state"
     iam_remote_state_key = "global/iam/terraform.tfstate"
-    desired_size = 0
+    desired_size = 2
     max_size = 2
-    min_size = 0
+    min_size = 1
     # max_unavailable = 0
 }
