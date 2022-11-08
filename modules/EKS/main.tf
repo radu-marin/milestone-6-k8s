@@ -57,14 +57,18 @@ resource "aws_eks_node_group" "node-group-1" {
   instance_types = ["t2.micro"]
  
   scaling_config {
-    desired_size = 2
-    max_size   = 2
-    min_size   = 1
+    # 2
+    desired_size = var.desired_size
+    # 2
+    max_size   = var.max_size
+    # 1
+    min_size   = var.min_size
   }
 
-  update_config {
-    max_unavailable = 1
-  }
+  # update_config {
+  #   # 1
+  #   max_unavailable = var.max_unavailable
+  # }
   
   # Need to create the aws-auth config map before
   depends_on = [
