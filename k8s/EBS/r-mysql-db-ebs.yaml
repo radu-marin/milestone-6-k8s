@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: r-mysql-db
+  name: r-mysql-db
+  namespace: rm-db
+spec:
+  containers:
+  - image: mysql
+    name: r-mysql-db
+    env:
+      - name: MYSQL_ROOT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: r-db-secret
+            key: DB_PASS
+            optional: false
+    ports:
+    - containerPort: 3306
+      name: mysql
+    volumeMounts:
+    - name: mysql-persistent-storage
+      mountPath: /var/lib/mysql
+    resources: {}
+  volumes:
+  - name: mysql-persistent-storage
+    persistentVolumeClaim:
+      claimName: r-pvc
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
