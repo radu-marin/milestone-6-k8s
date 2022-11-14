@@ -1,29 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: r-db-deploy
-  namespace: rm-db
+  name: ap-database-deployment
+  namespace: ap-database
 spec:
   selector:
     matchLabels:
-      app: r-db-mysql
+      app: ap-database-mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: r-db-mysql
+        app: ap-database-mysql 
     spec:
       containers:
-      - image: mysql
-        name: r-db-mysql
-        env:
+      - env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: r-db-secret
-              key: DB_PASS
-              optional: false
+              name: ap-database-creds
+              key: user
+        image: mysql
+        name: ap-database-mysql
         ports:
         - containerPort: 3306
           name: mysql
@@ -33,18 +32,4 @@ spec:
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: r-db-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: r-db-svc
-  namespace: rm-db
-  labels:
-    app: r-db-mysql
-spec:
-  ports:
-    - port: 3306
-      targetPort: 3306
-  selector:
-    app: r-db-mysql
+          claimName: ap-database-pvc

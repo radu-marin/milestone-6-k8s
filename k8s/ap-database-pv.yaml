@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: r-db-pv
+  name: ap-database-pv
+  namespace: ap-database
 spec:
   accessModes:
   - ReadWriteOnce
   hostPath:
-    path: "/mnt/r-db-data"
+    path: "/mnt/ap-database-data"
   capacity:
-    storage: 5Gi
+    storage: 2Gi
   persistentVolumeReclaimPolicy: Retain
   storageClassName: gp2
   volumeMode: Filesystem
