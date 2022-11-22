@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: r-webapp-deploy
-  namespace: rm-webapp
+  name: webapp-deploy
+  namespace: webapp
 spec:
   selector:
     matchLabels:
@@ -14,7 +14,7 @@ spec:
         run: devops-webapp-sample
     spec:
       containers:
-        - name: r-webapp-sample
+        - name: webapp-sample
           image: revianlabs/devops-webapp-sample:latest
           env:
             - name: SPRING_PROFILES_ACTIVE
@@ -22,14 +22,17 @@ spec:
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: r-db-secret
+                  name: db-secret
                   key: DB_PASS
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: r-db-secret
+                  name: db-secret
                   key: DB_USER
             - name: DB_URL
               value: jdbc:mysql://r-db-svc.rm-db.svc.cluster.local:3306/mysql
           ports:
             - containerPort: 8080
+      nodeSelector: 
+        topology.ebs.csi.aws.com/zone: "eu-central-1a"
+
