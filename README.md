@@ -11,7 +11,26 @@ Part1:  (Deploy EKS using Terraform)
 - Use Nagarro Jenkins to deploy the final version of EKS. (Team project)
 ***
 ## DESCRIPTION
-- dual environement construction : `DEV` and `PROD` that use modules hosted in `modules` directory (please check tree diagram):
+- Kubernetes folder (k8s) containing files for deployment via manifests or helm charts
+```
+k8s
+├── adelin.popa
+│   ├── helm
+│   └── manifests
+├── matei.serbanescu
+│   ├── helm
+│   └── manifests
+├── radu.marin
+│   ├── helm
+│   └── manifests
+├── radu.radau
+│   ├── helm
+│   └── manifests
+└── templates
+    ├── helm
+    └── manifests
+```
+- Terraform dual environement construction : `DEV` and `PROD` that use modules hosted in `modules` directory (please check tree diagram):
 ```
 ├── live
 │   ├── DEV
@@ -41,6 +60,8 @@ Part1:  (Deploy EKS using Terraform)
 	=> the network infrastructure consists of : 1 VPC, 2 public subnets, 2 private subnets, 1 internet gateway, 1 nat gateway, 1 public routing table, 1 private routing table; security groups: 1 sg for pub subnets, 1 sg for bastion, 1 sg for prv subnets.
 - ### [modules/EKS](https://github.com/radu-marin/milestone-6-k8s/tree/main/modules/EKS)
 	=> the EKS cluster module (creates cluster and worker nodes)
+- ### [modules/data-storage](https://github.com/radu-marin/milestone-6-k8s/tree/main/modules/data-storage)
+	=> the data-storage module (can be used to manually create EBS, but currently not in use beacuse of automatic provisioning with EBS CSI driver)
 
 OBS: other modules are not constructed yet (WIP)
 
