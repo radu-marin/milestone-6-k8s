@@ -34,8 +34,23 @@ node("linux"){
         withCredentials([string(credentialsId: params.AWS_AKI, variable: 'AWS_ACCESS_KEY_ID'), 
                          string(credentialsId: params.AWS_SAK, variable: 'AWS_SECRET_ACCESS_KEY')]) {
             docker.image('hashicorp/terraform').withRun('-e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"') { c ->
-                docker.image('hashicorp/terraform').inside('--entrypoint ""') {
+                docker.image('hashicorp/terraform').inside('-u root --entrypoint ""') {
                     sh '''
+                    apk add --no-cache \
+                            python3 \
+                            py3-pip \
+                        && pip3 install --upgrade pip \
+                        && pip3 install --no-cache-dir \
+                            awscli \
+                        && rm -rf /var/cache/apk/*
+                    aws eks --region eu-central-1 update-kubeconfig --name student-r-ms-6-k8s-DEV-eks-cluster
+                    cat ~/.kube/config
+                    apk add curl
+                    curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+                    chmod +x ./aws-iam-authenticator
+                    mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+                    echo 'export PATH=$PATH:$HOME/bin' >> ~/.shrc
+                    aws-iam-authenticator token -i environment_name.region.environment_type
                     cd "live/${ENV}"
                     echo "Current working directory is: $(pwd)"
                     terraform init
