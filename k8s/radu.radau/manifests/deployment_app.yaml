@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-webapp-sample 
+spec:
+  selector:
+    matchLabels:
+      run: devops-webapp-sample
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: devops-webapp-sample
+    spec:
+      containers:
+        - name: devops-webapp-sample
+          image: revianlabs/devops-webapp-sample:latest
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "h2"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                 name: rr-mysql-secret
+                 key: DB_PASS
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                 name: rr-mysql-secret
+                 key: DB_USER
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                 name: rr-mysql-secret
+                 key: DB_URL     
+
+          ports:
+            - containerPort: 8080
+      nodeSelector:
+        topology.ebs.csi.aws.com/zone: "eu-central-1a"
