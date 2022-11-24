@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ap-database-creds
-  namespace: ap-database
-type: Opaque
-stringData:
-  user: "root"
-  pass: "testP4ssw0rd"

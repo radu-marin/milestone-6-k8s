@@ -65,7 +65,7 @@ resource "aws_iam_role" "workernodes" {
 
 # List of policies for EKS worker nodes Role 
 locals {
-  worker_policies = ["AmazonEKSWorkerNodePolicy", "AmazonEKS_CNI_Policy", "AmazonEC2ContainerRegistryReadOnly" ]
+  worker_policies = ["AmazonEKSWorkerNodePolicy", "AmazonEKS_CNI_Policy", "AmazonEC2ContainerRegistryReadOnly", "service-role/AmazonEBSCSIDriverPolicy"]
 }
 
 # Attach policies to workernodes role
