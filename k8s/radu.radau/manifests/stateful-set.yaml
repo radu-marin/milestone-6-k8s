@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rr-mysql-svc
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306 
+  selector:
+    app: mysql
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rr-mysql-db
+  namespace: rr-mysql-db
+spec:
+  replicas: 1
+  serviceName: rr-mysql-svc
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: rr-db-mysql
+          image: mysql
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+             - name: MYSQL_ROOT_PASSWORD
+               valueFrom:
+                secretKeyRef:
+                 name: rr-mysql-secret
+                 key: DB_PASS 
+          volumeMounts:
+          - name: rr-mysql-storage
+            mountPath: /var/lib/mysql
+      nodeSelector:
+        topology.ebs.csi.aws.com/zone: "eu-central-1a"      
+  volumeClaimTemplates:
+    - metadata:
+        name: rr-mysql-storage
+      spec:
+        storageClassName: ebs-sc
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      
