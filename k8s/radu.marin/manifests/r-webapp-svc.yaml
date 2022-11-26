@@ -6,9 +6,9 @@ metadata:
   namespace: rm-webapp
 spec:
   ports:
-    - port: 8080
+    - port: 80
       protocol: TCP
       targetPort: 8080
   selector:
     run: devops-webapp-sample
-  type: NodePort
+  type: ClusterIP
