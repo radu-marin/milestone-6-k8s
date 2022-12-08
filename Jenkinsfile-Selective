@@ -1,0 +1,92 @@
+properties([
+    parameters([
+        // OTHER POSSIBLE VARIATIONS FOR PARAMETERS:
+        //
+        // password( name: 'AWS_ACCESS_KEY_ID', 
+        //         defaultValue: '', 
+        //         description: 'AWS Credentials: AWS access key ID'),
+        // password( name: 'AWS_SECRET_ACCESS_KEY', 
+        //         defaultValue: '', 
+        //         description: 'AWS Credentials: AWS secret access key'),
+        // string( name: 'AWS_AKI',
+        //         defaultValue: '',
+        //         description: 'The credential id of the AWS_ACCESS_KEY_ID'),
+        // string( name: 'AWS_SAK',
+        //         defaultValue: '',
+        //         description: 'The credential id of the AWS_SECRET_ACCESS_KEY'),
+        // string( name: 'GIT_BRANCH',
+        //         defaultValue: 'main',
+        //         description: 'The github branch link'),
+        string( name: 'AWS_CREDENTIALS',
+                defaultValue: '',
+                description: 'The credential id of the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY (aws.service.account.ms6)'),
+        string( name: 'GIT_URL',
+                defaultValue: 'https://github.com/radu-marin/milestone-6-k8s',
+                description: 'The github repository link'),
+        choice( name: 'ENV', 
+                choices: ['DEV/network', 'DEV/EKS', 'global/iam'], 
+                description: 'Choose deployment environment (OBS: deploy `network` and `iam` before `EKS`)'),
+        choice( name: 'ACTION', 
+                choices: ['Apply', 'Destroy'], 
+                description: 'Choose the required action for infrastructure')        
+    ])
+])
+
+//OBS: change to node("linux") if needed
+node("linux"){
+    stage("APPLY/DESTROY tf env"){
+        checkout scm
+        withCredentials([usernamePassword(credentialsId: params.AWS_CREDENTIALS, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+            docker.image('hashicorp/terraform').withRun('-e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"') { c ->
+                docker.image('hashicorp/terraform').inside('-u root --entrypoint ""') {
+                    sh '''
+                    apk add --no-cache \
+                            python3 \
+                            py3-pip \
+                        && pip3 install --upgrade pip \
+                        && pip3 install --no-cache-dir \
+                            awscli \
+                        && rm -rf /var/cache/apk/*
+                    aws eks --region eu-central-1 update-kubeconfig --name student-r-ms-6-k8s-DEV-eks-cluster
+                    cat ~/.kube/config
+                    apk add curl
+                    curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+                    chmod +x ./aws-iam-authenticator
+                    mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+                    echo 'export PATH=$PATH:$HOME/bin' >> ~/.shrc
+                    aws-iam-authenticator token -i environment_name.region.environment_type
+                    cd "live/${ENV}"
+                    echo "Current working directory is: $(pwd)"
+                    terraform init
+                    '''
+                    if (params.ACTION == "Apply"){
+                        sh '''
+                        cd "live/${ENV}"
+                        terraform plan -out=plan
+                        '''
+                        env.PLAN = input message: 'Do you want to implement plan?', parameters: [choice(name: 'PLAN', choices: ['YES', 'NO'], description: 'Implement plan')]
+                        if (env.PLAN == 'YES') {
+                            sh '''
+                            cd "live/${ENV}"
+                            terraform apply plan
+                            '''
+                        }
+                    }
+                    if (params.ACTION == "Destroy"){
+                        sh '''
+                        cd "live/${ENV}"
+                        terraform plan -destroy -out=plan
+                        '''
+                        env.PLAN = input message: 'Do you want to implement destruction plan?', parameters: [choice(name: 'PLAN', choices: ['YES', 'NO'], description: 'Implement plan')]
+                        if (env.PLAN == 'YES') {
+                            sh '''
+                            cd "live/${ENV}"
+                            terraform apply plan
+                            '''
+                        }
+                    }
+                }
+            }            
+        }
+    }
+}
