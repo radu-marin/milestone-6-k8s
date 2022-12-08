@@ -1,17 +1,22 @@
 properties([
     parameters([
+        // OTHER POSSIBLE VARIATIONS FOR PARAMETERS:
+        //
         // password( name: 'AWS_ACCESS_KEY_ID', 
         //         defaultValue: '', 
         //         description: 'AWS Credentials: AWS access key ID'),
         // password( name: 'AWS_SECRET_ACCESS_KEY', 
         //         defaultValue: '', 
         //         description: 'AWS Credentials: AWS secret access key'),
-        string( name: 'AWS_AKI',
+        // string( name: 'AWS_AKI',
+        //         defaultValue: '',
+        //         description: 'The credential id of the AWS_ACCESS_KEY_ID'),
+        // string( name: 'AWS_SAK',
+        //         defaultValue: '',
+        //         description: 'The credential id of the AWS_SECRET_ACCESS_KEY'),
+        string( name: 'AWS_CREDENTIALS',
                 defaultValue: '',
-                description: 'The credential id of the aws access key id'),
-        string( name: 'AWS_SAK',
-                defaultValue: '',
-                description: 'The credential id of the aws secret access key'),
+                description: 'The credential id of the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY (aws.service.account.ms6)'),
         string( name: 'GIT_URL',
                 defaultValue: 'https://github.com/radu-marin/milestone-6-k8s',
                 description: 'The github repository link'),
@@ -31,8 +36,7 @@ properties([
 node("linux"){
     stage("APPLY/DESTROY tf env"){
         checkout scm
-        withCredentials([string(credentialsId: params.AWS_AKI, variable: 'AWS_ACCESS_KEY_ID'), 
-                         string(credentialsId: params.AWS_SAK, variable: 'AWS_SECRET_ACCESS_KEY')]) {
+        withCredentials([usernamePassword(credentialsId: params.AWS_CREDENTIALS, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             docker.image('hashicorp/terraform').withRun('-e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"') { c ->
                 docker.image('hashicorp/terraform').inside('-u root --entrypoint ""') {
                     sh '''
