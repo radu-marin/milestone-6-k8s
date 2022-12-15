@@ -17,8 +17,6 @@ spec:
         - name: r-webapp-sample
           image: revianlabs/devops-webapp-sample:latest
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "h2"
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
