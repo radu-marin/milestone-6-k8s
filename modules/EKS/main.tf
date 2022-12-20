@@ -54,7 +54,7 @@ resource "aws_eks_node_group" "node-group-1" {
   node_role_arn  = data.terraform_remote_state.iam.outputs.workernodes_iam_role_arn
   #aws_iam_role.workernodes.arn
   subnet_ids   = data.terraform_remote_state.network.outputs.prv_subnets_id
-  instance_types = ["t3.small"]
+  instance_types = ["t3.medium"]
  
   scaling_config {
     # 2
