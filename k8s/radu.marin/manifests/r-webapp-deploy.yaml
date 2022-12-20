@@ -32,5 +32,5 @@ spec:
           ports:
             - containerPort: 8080
       nodeSelector: 
-        topology.ebs.csi.aws.com/zone: "eu-central-1a"
+        topology.ebs.csi.aws.com/zone: "eu-central-1b"
         

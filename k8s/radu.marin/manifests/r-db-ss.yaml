@@ -48,7 +48,7 @@ spec:
         - name: r-mysql-storage
           mountPath: /var/lib/mysql
       nodeSelector:
-        topology.ebs.csi.aws.com/zone: "eu-central-1a"
+        topology.ebs.csi.aws.com/zone: "eu-central-1b"
   volumeClaimTemplates:
   - metadata:
       name: r-mysql-storage
