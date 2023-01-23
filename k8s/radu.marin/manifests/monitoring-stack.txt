@@ -1,0 +1,2 @@
+For monitoring stack deployment follow:
+https://prometheus-operator.dev/docs/prologue/quick-start/

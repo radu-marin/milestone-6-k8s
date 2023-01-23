@@ -35,6 +35,8 @@ spec:
       - name: r-db-mysql
         image: mysql
         env:
+        - name: MYSQL_DATABASE
+          value: webapp
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -48,7 +50,7 @@ spec:
         - name: r-mysql-storage
           mountPath: /var/lib/mysql
       nodeSelector:
-        topology.ebs.csi.aws.com/zone: "eu-central-1b"
+        topology.ebs.csi.aws.com/zone: "eu-central-1a"
   volumeClaimTemplates:
   - metadata:
       name: r-mysql-storage
