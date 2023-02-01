@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "terraform_state" {
 
     # Prevent accidental deletion of this S3 bucket
     lifecycle {
-      prevent_destroy = true # if 'true' terraform destroy -> will exit with an error
+      prevent_destroy = false # if 'true' terraform destroy -> will exit with an error
     }
 }
 
