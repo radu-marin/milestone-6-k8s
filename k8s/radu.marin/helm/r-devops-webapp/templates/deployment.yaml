@@ -47,6 +47,7 @@ spec:
                   name: {{.Release.Name}}-auth
                   key: DB_USER
             - name: DB_URL
+            # de verificat url ca in manifests: jdbc:mysql://r-db-svc.rm-db.svc.cluster.local:3306/webapp
               value: "jdbc:mysql://{{.Release.Name}}-mysql.{{.Release.Namespace}}.svc.cluster.local:3306/mysql"
           ports:
             - name: http

@@ -85,6 +85,7 @@ affinity: {}
 
 mysql:
   enabled: true
+  # de adaugat variabile ca pt db ca in manifests (MYSQL_DATABASE = webapp)
   auth:
     rootPassword: "password1234"
   global:
